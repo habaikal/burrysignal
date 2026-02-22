@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig(({ mode }) => {
   return {
+    base: '/burrysignal/',
     server: {
       port: 3000,
       host: '0.0.0.0',
