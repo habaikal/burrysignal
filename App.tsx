@@ -7,6 +7,7 @@ import MetricCard from './components/MetricCard';
 import BurryTerminal from './components/BurryTerminal';
 import GaugeChart from './components/GaugeChart';
 import SimulationPanel from './components/SimulationPanel';
+import ProfitGuideModal from './components/ProfitGuideModal';
 
 const App: React.FC = () => {
   const [lang, setLang] = useState<Language>('en');
@@ -15,6 +16,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<string>(new Date().toLocaleTimeString());
   const [currentScenario, setCurrentScenario] = useState<string | undefined>(undefined);
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
 
   const runAnalysis = useCallback(async (scenario?: string) => {
     setLoading(true);
@@ -87,6 +89,12 @@ const App: React.FC = () => {
                   KO
                 </button>
               </div>
+              <button
+                onClick={() => setIsGuideOpen(true)}
+                className="px-4 py-2 border border-slate-600 rounded-lg text-xs font-black text-slate-300 hover:text-white hover:bg-slate-800 transition-colors uppercase"
+              >
+                {lang === 'ko' ? '수익 실현 가이드 / PROFIT GUIDE' : 'PROFIT GUIDE'}
+              </button>
             </div>
             <h1 className="text-[43px] sm:text-[57px] md:text-[76px] font-black tracking-tighter text-white leading-[0.85] uppercase">
               {lang === 'ko' ? <>버리<span className="text-red-600">시그널</span></> : <>BURRY<span className="text-red-600">SIGNAL</span></>}
@@ -105,8 +113,8 @@ const App: React.FC = () => {
               onClick={() => { randomizeData(); runAnalysis(); }}
               disabled={loading}
               className={`px-12 py-5 rounded-2xl font-black text-xs tracking-[0.3em] uppercase transition-all shadow-[0_20px_40px_rgba(0,0,0,0.5)] active:scale-95 ${loading
-                  ? 'bg-slate-800 text-slate-600 cursor-not-allowed'
-                  : 'bg-red-600 hover:bg-red-500 text-white hover:-translate-y-1'
+                ? 'bg-slate-800 text-slate-600 cursor-not-allowed'
+                : 'bg-red-600 hover:bg-red-500 text-white hover:-translate-y-1'
                 }`}
             >
               {loading ? t.runningBtn : t.runBtn}
@@ -134,8 +142,8 @@ const App: React.FC = () => {
               className={`p-8 rounded-[2.5rem] border border-white/5 flex flex-col justify-center transition-all duration-300 flex-1 relative bg-[#1e293b]/30 hover:border-white/20 group cursor-default`}
             >
               <div className={`text-2xl font-black mb-1 flex items-center justify-between ${item.level === 'STABLE' ? 'text-green-500' :
-                  item.level === 'WARNING' ? 'text-amber-500' :
-                    item.level === 'CRISIS' ? 'text-orange-600' : 'text-red-600'
+                item.level === 'WARNING' ? 'text-amber-500' :
+                  item.level === 'CRISIS' ? 'text-orange-600' : 'text-red-600'
                 } tracking-tight`}>
                 <span>{item.level}</span>
                 <span className="text-xs opacity-50 font-mono tracking-widest font-bold">{item.range}</span>
@@ -210,6 +218,11 @@ const App: React.FC = () => {
           <span className="text-blue-500">{t.encrypted}</span>
         </div>
       </footer>
+      <ProfitGuideModal
+        isOpen={isGuideOpen}
+        onClose={() => setIsGuideOpen(false)}
+        lang={lang}
+      />
     </div>
   );
 };
