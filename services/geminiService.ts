@@ -7,18 +7,14 @@ export class GeminiService {
 
   constructor() {
     let key = import.meta.env.VITE_GEMINI_API_KEY;
-    if (!key) {
+
+    // Ignore placeholder keys and fallback to local storage
+    if (!key || key === 'PLACEHOLDER_API_KEY') {
       key = localStorage.getItem('gemini_api_key');
-      if (!key) {
-        key = prompt('Gemini API 키를 입력해주세요. (입력 후 브라우저에 임시 저장됩니다.) / Please enter your Gemini API Key:');
-        if (key) {
-          localStorage.setItem('gemini_api_key', key);
-        }
-      }
     }
 
     if (!key) {
-      throw new Error("API Key is missing");
+      throw new Error("API_KEY_MISSING");
     }
 
     this.ai = new GoogleGenAI({ apiKey: key });

@@ -9,6 +9,7 @@ import GaugeChart from './components/GaugeChart';
 import SimulationPanel from './components/SimulationPanel';
 import ProfitGuideModal from './components/ProfitGuideModal';
 import AutoExecutionLog from './components/AutoExecutionLog';
+import ApiKeyModal from './components/ApiKeyModal';
 import { Bot } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -20,6 +21,7 @@ const App: React.FC = () => {
   const [currentScenario, setCurrentScenario] = useState<string | undefined>(undefined);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [isAutoExecution, setIsAutoExecution] = useState(false);
+  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
 
   const runAnalysis = useCallback(async (scenario?: string) => {
     setLoading(true);
@@ -30,11 +32,16 @@ const App: React.FC = () => {
       if (result) {
         setAnalysis(result);
       } else {
-        alert(lang === 'ko' ? "분석 중 오류가 발생했습니다. (API 키 필요)" : "Analysis error. (API Key required)");
+        alert(lang === 'ko' ? "분석 중 오류가 발생했습니다." : "Analysis error.");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert(lang === 'ko' ? "치명적 오류: API 키가 누락되었거나 접근할 수 없습니다." : "Critical Error: API Key is missing or inaccessible.");
+      const isMissingKey = error.message?.includes('API_KEY') || error.status === 401 || error.status === 403;
+      if (isMissingKey) {
+        setShowApiKeyModal(true);
+      } else {
+        alert(lang === 'ko' ? "치명적 오류: 알 수 없는 이유로 분석에 실패했습니다." : "Critical Error: Failed to analyze.");
+      }
     } finally {
       setLoading(false);
       setLastUpdate(new Date().toLocaleTimeString());
@@ -58,7 +65,7 @@ const App: React.FC = () => {
     scanner: lang === 'ko' ? '실시간 위기 스캐너' : 'LIVE CRISIS SCANNER',
     title: lang === 'ko' ? '버리시그널' : 'BURRYSIGNAL',
     desc: lang === 'ko'
-      ? '마이클 버리의 비관적 직관을 알고리즘화했습니다. 일반적인 지표가 아닌, 부자들의 행동 변화와 언어적 패턴을 통해 다음 붕괴를 예측합니다.'
+      ? '마이클 버리의 직관을 알고리즘화했습니다. 일반적인 지표가 아닌, 부자들의 행동 변화와 언어적 패턴을 통해 다음 붕괴를 예측합니다.'
       : 'Algorithmic pessimism. Detecting elite behavioral patterns and systemic fractures to predict the next market collapse.',
     sync: lang === 'ko' ? '시스템 동기화 시간' : 'SYSTEM_CORE_UPTIME',
     runBtn: lang === 'ko' ? '딥 스캔 시작' : 'DEEP SCAN START',
@@ -245,6 +252,16 @@ const App: React.FC = () => {
         score={analysis?.score}
         isActive={isAutoExecution}
         lang={lang}
+      />
+      <ApiKeyModal
+        isOpen={showApiKeyModal}
+        onClose={() => setShowApiKeyModal(false)}
+        lang={lang}
+        onSave={(key) => {
+          localStorage.setItem('gemini_api_key', key);
+          setShowApiKeyModal(false);
+          runAnalysis();
+        }}
       />
     </div>
   );
