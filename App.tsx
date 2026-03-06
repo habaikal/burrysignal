@@ -44,8 +44,8 @@ const App: React.FC = () => {
   const t = {
     scanner: lang === 'ko' ? '실시간 위기 스캐너' : 'LIVE CRISIS SCANNER',
     title: lang === 'ko' ? '버리시그널' : 'BURRYSIGNAL',
-    desc: lang === 'ko' 
-      ? '마이클 버리의 비관적 직관을 알고리즘화했습니다. 일반적인 지표가 아닌, 부자들의 행동 변화와 언어적 패턴을 통해 다음 붕괴를 예측합니다.' 
+    desc: lang === 'ko'
+      ? '마이클 버리의 비관적 직관을 알고리즘화했습니다. 일반적인 지표가 아닌, 부자들의 행동 변화와 언어적 패턴을 통해 다음 붕괴를 예측합니다.'
       : 'Algorithmic pessimism. Detecting elite behavioral patterns and systemic fractures to predict the next market collapse.',
     sync: lang === 'ko' ? '시스템 동기화 시간' : 'SYSTEM_CORE_UPTIME',
     runBtn: lang === 'ko' ? '딥 스캔 시작' : 'DEEP SCAN START',
@@ -70,17 +70,17 @@ const App: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12">
           <div className="relative">
             <div className="flex items-center gap-4 mb-4">
-               <span className={`text-[10px] font-black px-4 py-1.5 rounded-full border transition-all tracking-[0.2em] uppercase ${currentScenario ? 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30' : 'bg-red-500/20 text-red-500 border-red-500/30'}`}>
+              <span className={`text-[10px] font-black px-4 py-1.5 rounded-full border transition-all tracking-[0.2em] uppercase ${currentScenario ? 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30' : 'bg-red-500/20 text-red-500 border-red-500/30'}`}>
                 {currentScenario ? t.scenarioActive : t.scanner}
               </span>
               <div className="flex bg-white/5 p-1 rounded-xl border border-white/10">
-                <button 
+                <button
                   onClick={() => setLang('en')}
                   className={`px-3 py-1 rounded-lg text-[10px] font-black transition-all ${lang === 'en' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'}`}
                 >
                   EN
                 </button>
-                <button 
+                <button
                   onClick={() => setLang('ko')}
                   className={`px-3 py-1 rounded-lg text-[10px] font-black transition-all ${lang === 'ko' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'}`}
                 >
@@ -88,27 +88,26 @@ const App: React.FC = () => {
                 </button>
               </div>
             </div>
-            <h1 className="text-7xl sm:text-8xl md:text-9xl font-black tracking-tighter text-white leading-[0.85] uppercase">
+            <h1 className="text-[43px] sm:text-[57px] md:text-[76px] font-black tracking-tighter text-white leading-[0.85] uppercase">
               {lang === 'ko' ? <>버리<span className="text-red-600">시그널</span></> : <>BURRY<span className="text-red-600">SIGNAL</span></>}
             </h1>
             <p className="text-slate-400 mt-8 max-w-2xl text-lg sm:text-xl font-light leading-relaxed">
               {t.desc}
             </p>
           </div>
-          
+
           <div className="flex flex-col items-end gap-5">
-             <div className="text-right">
-                <div className="text-slate-600 text-[10px] uppercase font-mono tracking-[0.4em] mb-2 font-bold">{t.sync}</div>
-                <div className="text-4xl font-black mono text-slate-100 tracking-tighter shadow-sm">{lastUpdate}</div>
-             </div>
-             <button 
+            <div className="text-right">
+              <div className="text-slate-600 text-[10px] uppercase font-mono tracking-[0.4em] mb-2 font-bold">{t.sync}</div>
+              <div className="text-4xl font-black mono text-slate-100 tracking-tighter shadow-sm">{lastUpdate}</div>
+            </div>
+            <button
               onClick={() => { randomizeData(); runAnalysis(); }}
               disabled={loading}
-              className={`px-12 py-5 rounded-2xl font-black text-xs tracking-[0.3em] uppercase transition-all shadow-[0_20px_40px_rgba(0,0,0,0.5)] active:scale-95 ${
-                loading 
-                ? 'bg-slate-800 text-slate-600 cursor-not-allowed' 
-                : 'bg-red-600 hover:bg-red-500 text-white hover:-translate-y-1'
-              }`}
+              className={`px-12 py-5 rounded-2xl font-black text-xs tracking-[0.3em] uppercase transition-all shadow-[0_20px_40px_rgba(0,0,0,0.5)] active:scale-95 ${loading
+                  ? 'bg-slate-800 text-slate-600 cursor-not-allowed'
+                  : 'bg-red-600 hover:bg-red-500 text-white hover:-translate-y-1'
+                }`}
             >
               {loading ? t.runningBtn : t.runBtn}
             </button>
@@ -122,28 +121,27 @@ const App: React.FC = () => {
           <div className="absolute inset-0 bg-indigo-500/5 pointer-events-none rounded-[3rem] ring-2 ring-indigo-500/20 animate-pulse"></div>
         )}
         <div className="lg:col-span-7 flex flex-col">
-          <GaugeChart 
-            score={analysis?.score || 0} 
-            label={analysis?.simpleStatus || (lang === 'ko' ? '시장 데이터를 정밀 분석 중입니다...' : 'Analyzing market data precision...')} 
+          <GaugeChart
+            score={analysis?.score || 0}
+            label={analysis?.simpleStatus || (lang === 'ko' ? '시장 데이터를 정밀 분석 중입니다...' : 'Analyzing market data precision...')}
           />
         </div>
-        
+
         <div className="lg:col-span-5 flex flex-col gap-5">
           {[t.stable, t.warning, t.crisis, t.catastrophic].map((item) => (
-            <div 
-              key={item.level} 
+            <div
+              key={item.level}
               className={`p-8 rounded-[2.5rem] border border-white/5 flex flex-col justify-center transition-all duration-300 flex-1 relative bg-[#1e293b]/30 hover:border-white/20 group cursor-default`}
             >
-              <div className={`text-2xl font-black mb-1 flex items-center justify-between ${
-                item.level === 'STABLE' ? 'text-green-500' : 
-                item.level === 'WARNING' ? 'text-amber-500' : 
-                item.level === 'CRISIS' ? 'text-orange-600' : 'text-red-600'
-              } tracking-tight`}>
+              <div className={`text-2xl font-black mb-1 flex items-center justify-between ${item.level === 'STABLE' ? 'text-green-500' :
+                  item.level === 'WARNING' ? 'text-amber-500' :
+                    item.level === 'CRISIS' ? 'text-orange-600' : 'text-red-600'
+                } tracking-tight`}>
                 <span>{item.level}</span>
                 <span className="text-xs opacity-50 font-mono tracking-widest font-bold">{item.range}</span>
               </div>
               <div className="text-sm sm:text-base text-slate-400 font-medium leading-relaxed group-hover:text-slate-300 transition-colors">{item.desc}</div>
-              
+
               {analysis?.overallRisk === item.level && (
                 <div className="absolute left-0 top-0 w-1.5 h-full bg-current rounded-l-full shadow-[0_0_15px_rgba(255,255,255,0.3)]"></div>
               )}
@@ -154,11 +152,11 @@ const App: React.FC = () => {
 
       {/* Simulation Panel - New Section */}
       <section className="mb-24">
-        <SimulationPanel 
-          analysis={analysis} 
-          loading={loading} 
-          lang={lang} 
-          onTriggerScenario={(prompt) => runAnalysis(prompt)} 
+        <SimulationPanel
+          analysis={analysis}
+          loading={loading}
+          lang={lang}
+          onTriggerScenario={(prompt) => runAnalysis(prompt)}
         />
       </section>
 
