@@ -8,6 +8,8 @@ import BurryTerminal from './components/BurryTerminal';
 import GaugeChart from './components/GaugeChart';
 import SimulationPanel from './components/SimulationPanel';
 import ProfitGuideModal from './components/ProfitGuideModal';
+import AutoExecutionLog from './components/AutoExecutionLog';
+import { Bot } from 'lucide-react';
 
 const App: React.FC = () => {
   const [lang, setLang] = useState<Language>('en');
@@ -17,6 +19,7 @@ const App: React.FC = () => {
   const [lastUpdate, setLastUpdate] = useState<string>(new Date().toLocaleTimeString());
   const [currentScenario, setCurrentScenario] = useState<string | undefined>(undefined);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
+  const [isAutoExecution, setIsAutoExecution] = useState(false);
 
   const runAnalysis = useCallback(async (scenario?: string) => {
     setLoading(true);
@@ -94,6 +97,13 @@ const App: React.FC = () => {
                 className="px-4 py-2 border border-slate-600 rounded-lg text-xs font-black text-slate-300 hover:text-white hover:bg-slate-800 transition-colors uppercase"
               >
                 {lang === 'ko' ? '수익 실현 가이드 / PROFIT GUIDE' : 'PROFIT GUIDE'}
+              </button>
+              <button
+                onClick={() => setIsAutoExecution(!isAutoExecution)}
+                className={`px-4 py-2 border rounded-lg text-xs font-black transition-colors uppercase flex items-center gap-2 ${isAutoExecution ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)]' : 'border-slate-600 text-slate-300 hover:text-white hover:bg-slate-800'}`}
+              >
+                <Bot className={`w-4 h-4 ${isAutoExecution ? 'animate-pulse' : ''}`} />
+                {lang === 'ko' ? '자동 진입 모드 (BOT)' : 'AUTO-ENTRY BOT'}
               </button>
             </div>
             <h1 className="text-[43px] sm:text-[57px] md:text-[76px] font-black tracking-tighter text-white leading-[0.85] uppercase">
@@ -221,6 +231,11 @@ const App: React.FC = () => {
       <ProfitGuideModal
         isOpen={isGuideOpen}
         onClose={() => setIsGuideOpen(false)}
+        lang={lang}
+      />
+      <AutoExecutionLog
+        score={analysis?.score}
+        isActive={isAutoExecution}
         lang={lang}
       />
     </div>
