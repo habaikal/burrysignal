@@ -24,13 +24,21 @@ const App: React.FC = () => {
   const runAnalysis = useCallback(async (scenario?: string) => {
     setLoading(true);
     setCurrentScenario(scenario);
-    const service = new GeminiService();
-    const result = await service.analyzeRisk(indicators, lang, scenario);
-    if (result) {
-      setAnalysis(result);
+    try {
+      const service = new GeminiService();
+      const result = await service.analyzeRisk(indicators, lang, scenario);
+      if (result) {
+        setAnalysis(result);
+      } else {
+        alert(lang === 'ko' ? "분석 중 오류가 발생했습니다. (API 키 필요)" : "Analysis error. (API Key required)");
+      }
+    } catch (error) {
+      console.error(error);
+      alert(lang === 'ko' ? "치명적 오류: API 키가 누락되었거나 접근할 수 없습니다." : "Critical Error: API Key is missing or inaccessible.");
+    } finally {
+      setLoading(false);
+      setLastUpdate(new Date().toLocaleTimeString());
     }
-    setLoading(false);
-    setLastUpdate(new Date().toLocaleTimeString());
   }, [indicators, lang]);
 
   useEffect(() => {
